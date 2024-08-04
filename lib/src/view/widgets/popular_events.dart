@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:untitled/src/app/const/const.dart';
+import 'package:untitled/src/app/model/event.dart';
 import 'package:untitled/src/view/bloc/events_bloc.dart';
 
 class PopularEvents extends StatelessWidget {

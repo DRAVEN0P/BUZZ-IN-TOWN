@@ -18,11 +18,18 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
       Utils.showProgressBar(event.context);
     });
     on<GetAllEvents>(_getAll);
+    on<GetAllBookMarks>(_getBookmark);
   }
 
   _getAll(GetAllEvents event, Emitter<EventsState> emit) async {
     List<Event> events = await apis.getEvent(event.type);
     emit(state.copyWith(events: events));
+    event.context.pop();
+  }
+
+  _getBookmark(GetAllBookMarks event, Emitter<EventsState> emit) async {
+    List<Event> bookMark = await apis.getBookMarks(event.name);
+    emit(state.copyWith(bookMark: bookMark));
     event.context.pop();
   }
 }

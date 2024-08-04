@@ -15,3 +15,15 @@ class GetAllEvents extends EventsEvent {
   // TODO: implement props
   List<Object> get props => [type];
 }
+
+class GetAllBookMarks extends EventsEvent {
+  final String name;
+
+  const GetAllBookMarks(super.context, this.name);
+
+  @override
+  // TODO: implement props
+  List<Object> get props => [name];
+}
+
+

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:untitled/src/app/api/api.dart';
+import 'package:untitled/src/app/model/event.dart';
 import 'package:untitled/src/view/widgets/bottom_bar.dart';
 import 'package:untitled/src/view/widgets/events_card.dart';
 import 'package:untitled/src/view/widgets/popular_events.dart';
@@ -15,29 +15,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    int _selectedIndex = 0;
-
-    const List<Widget> _widgetOptions = <Widget>[
-      Text(
-        'Home Page',
-        style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
-      ),
-      Text(
-        'Search Page',
-        style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
-      ),
-      Text(
-        'Profile Page',
-        style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
-      ),
-    ];
-
-    void _onItemTapped(int index) {
-      setState(() {
-        _selectedIndex = index;
-      });
-    }
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFFFCEBC4),
@@ -77,7 +54,6 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
             onPressed: () {
-              Apis().getEvent("");
             },
             icon: const Icon(
               Icons.notifications_none,
@@ -136,11 +112,11 @@ class _HomePageState extends State<HomePage> {
               const Padding(
                 padding: EdgeInsets.only(left: 12, top: 35),
                 child: Text(
-                  "Popular Events",
+                  "Nearby Events",
                   style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
                 ),
               ),
-              const PopularEvents(),
+              PopularEvents(),
               // SizedBox(height: 10,),
               const EventsCard(),
             ],
@@ -171,11 +147,11 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          const Positioned(
+          Positioned(
             left: 10,
             right: 10,
             bottom: 50,
-            child: BottomBar(),
+            child: BottomBar(index: 0,),
           ),
         ],
       ),

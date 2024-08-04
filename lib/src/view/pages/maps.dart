@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
 import 'package:untitled/src/app/const/key.dart';
 
 class Maps extends StatefulWidget {
@@ -13,21 +14,29 @@ class Maps extends StatefulWidget {
 
 class _MapsState extends State<Maps> {
   static const _initialCameraPosition = CameraPosition(
-    target: sourceLocation,
+    target: destination,
     zoom: 14.5,
   );
-
-  static const LatLng sourceLocation = LatLng(37.33500926, -122.03272188);
-  static const LatLng destination = LatLng(37.33429383, -122.06600055);
   List<LatLng> polyCord = [];
+  LocationData? currLocation;
+  static const LatLng destination = LatLng(37.33429383, -122.06600055);
+
+  void getCurrentLocation() {
+    Location location = Location();
+    location.getLocation().then((location) {
+      setState(() {
+        currLocation = location;
+      });
+    });
+  }
 
   void getPolyPoint() async {
     PolylinePoints polylinePoints = PolylinePoints();
-
+    polyCord = [];
     PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
       googleApiKey: APIKEY,
       request: PolylineRequest(
-        origin: PointLatLng(sourceLocation.latitude, sourceLocation.longitude),
+        origin: PointLatLng(currLocation!.latitude!, currLocation!.longitude!),
         destination: PointLatLng(destination.latitude, destination.longitude),
         mode: TravelMode.driving,
       ),
@@ -39,12 +48,13 @@ class _MapsState extends State<Maps> {
           LatLng(point.latitude, point.longitude),
         ),
       );
+      setState(() {});
     }
   }
 
   @override
   void initState() {
-    getPolyPoint();
+    getCurrentLocation();
     // TODO: implement initState
     super.initState();
   }
@@ -57,23 +67,52 @@ class _MapsState extends State<Maps> {
           onPressed: () {
             context.go("/home");
           },
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
         ),
-        title: Text("Direction"),
+        title: const Text("Direction"),
       ),
-      body: GoogleMap(
-        polylines: {
-          Polyline(
-            polylineId: PolylineId("routes"),
-            points: polyCord,
-            width: 3,
-          )
-        },
-        initialCameraPosition: _initialCameraPosition,
-        markers: {
-          Marker(markerId: MarkerId("source"), position: sourceLocation),
-          Marker(markerId: MarkerId("destination"), position: destination),
-        },
+      body: currLocation == null
+          ? const Center(child: CircularProgressIndicator())
+          : SafeArea(
+              child: GoogleMap(
+                myLocationEnabled: true,
+                myLocationButtonEnabled: true,
+                polylines: {
+                  Polyline(
+                    polylineId: PolylineId("routes"),
+                    points: polyCord,
+                    width: 3,
+                  )
+                },
+                initialCameraPosition: _initialCameraPosition,
+                markers: {
+                  Marker(
+                      markerId: const MarkerId("source"),
+                      position: LatLng(
+                          currLocation!.latitude!, currLocation!.longitude!)),
+                  const Marker(
+                      markerId: MarkerId("destination"), position: destination),
+                },
+              ),
+            ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 60),
+        child: Container(
+          width: 55,
+          height: 55,
+          clipBehavior: Clip.hardEdge,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+          ),
+          child: MaterialButton(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              color: Colors.white,
+              elevation: 0,
+              onPressed: () {
+                getPolyPoint();
+              },
+              child: Icon(Icons.location_on)),
+        ),
       ),
     );
   }

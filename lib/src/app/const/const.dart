@@ -13,9 +13,9 @@ List<CusIcon> popularEvents = [
   CusIcon("Exhibition", Icon(Icons.museum)),
 ];
 
-List<CusIcon> bottomBar = [
-  CusIcon("Home", Icon(Icons.home)),
-  CusIcon("Events", Icon(Icons.calendar_month)),
-  CusIcon("Saves", Icon(Icons.bookmark)),
-  CusIcon("Setting", Icon(Icons.settings)),
+List<String> settingList = [
+  "Personal Information",
+  "Your payments",
+  "Your Wallet",
+  "Referral Code"
 ];
